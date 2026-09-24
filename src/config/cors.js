@@ -1,3 +1,8 @@
+const deployedFrontendOrigins = [
+  "https://frontend-git-main-main-68b3.vercel.app",
+  "https://frontend-main-68b3.vercel.app",
+];
+
 const getAllowedOrigins = () => {
   const origins = [process.env.CLIENT_URL, process.env.FRONTEND_URL]
     .filter(Boolean)
@@ -5,7 +10,11 @@ const getAllowedOrigins = () => {
     .map((origin) => origin.trim().replace(/\/+$/, ""))
     .filter(Boolean);
 
-  return origins.length ? [...new Set(origins)] : ["http://localhost:3000"];
+  return [...new Set([
+    ...deployedFrontendOrigins,
+    ...origins,
+    ...(origins.length ? [] : ["http://localhost:3000"]),
+  ])];
 };
 
 const corsOrigin = (origin, callback) => {
