@@ -116,7 +116,7 @@ const getMe = async (req, res) => {
 };
 
 const forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const email = typeof req.body.email === "string" ? req.body.email.trim().toLowerCase() : "";
   const message = "If an account exists for this email, a password-reset link has been sent.";
 
   if (!email) {
@@ -134,8 +134,8 @@ const forgotPassword = async (req, res) => {
     user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000);
     await user.save();
 
-    const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:3000";
-    const resetUrl = `${frontendUrl}/reset-password?token=${rawToken}`;
+    const frontendUrl = (process.env.FRONTEND_URL || process.env.CLIENT_URL || "http://localhost:3000").replace(/\/+$/, "");
+    const resetUrl = `${frontendUrl}/reset-password?token=${encodeURIComponent(rawToken)}`;
 
     try {
       await sendPasswordResetEmail({ email: user.email, name: user.name, resetUrl });
@@ -148,15 +148,15 @@ const forgotPassword = async (req, res) => {
 
     return res.json({ message });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+      return res.status(error.status || 500).json({ message: error.message });
   }
 };
 
 const resetPassword = async (req, res) => {
   const { token } = req.params;
-  const { password } = req.body;
+  const password = typeof req.body.password === "string" ? req.body.password : "";
 
-  if (!password || password.length < 6) {
+  if (password.length < 6 || password.length > 128) {
     return res.status(400).json({ message: "Password must be at least 6 characters long" });
   }
 
