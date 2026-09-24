@@ -5,11 +5,12 @@ const User = require("../models/User");
 const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 const Notification = require("../models/Notification");
+const corsOrigin = require("../config/cors");
 
 const setupSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: process.env.CLIENT_URL || "http://localhost:3000",
+      origin: corsOrigin,
       methods: ["GET", "POST"],
       credentials: true,
     },

@@ -7,6 +7,7 @@ const cors = require("cors");
 const http = require("http");
 
 const connectDB = require("./config/db");
+const corsOrigin = require("./config/cors");
 const errorHandler = require("./middleware/errorMiddleware");
 const setupSocket = require("./socket/socket");
 
@@ -23,7 +24,7 @@ const server = http.createServer(app);
 
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: corsOrigin,
     credentials: true,
   })
 );
