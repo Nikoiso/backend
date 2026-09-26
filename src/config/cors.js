@@ -2,7 +2,7 @@ const deployedFrontendOrigins = [
   "https://frontend-tawny-rho-74.vercel.app",
 ];
 
-const vercelOrgPattern = /^https:\/\/frontend(-[a-z0-9-]+)?-68b3\.vercel\.app$/;
+const vercelPattern = /^https:\/\/frontend(-[a-z0-9-]+)*\.vercel\.app$/;
 
 const getAllowedOrigins = () => {
   const origins = [process.env.CLIENT_URL, process.env.FRONTEND_URL]
@@ -26,7 +26,7 @@ const corsOrigin = (origin, callback) => {
 
   const isAllowed =
     allowedOrigins.includes(normalizedOrigin) ||
-    vercelOrgPattern.test(normalizedOrigin);
+    vercelPattern.test(normalizedOrigin);
 
   if (isAllowed) {
     return callback(null, true);
