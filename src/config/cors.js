@@ -1,7 +1,8 @@
 const deployedFrontendOrigins = [
-  "https://frontend-git-main-main-68b3.vercel.app",
-  "https://frontend-main-68b3.vercel.app",
+  "https://frontend-tawny-rho-74.vercel.app",
 ];
+
+const vercelOrgPattern = /^https:\/\/frontend(-[a-z0-9-]+)?-68b3\.vercel\.app$/;
 
 const getAllowedOrigins = () => {
   const origins = [process.env.CLIENT_URL, process.env.FRONTEND_URL]
@@ -18,10 +19,16 @@ const getAllowedOrigins = () => {
 };
 
 const corsOrigin = (origin, callback) => {
-  const allowedOrigins = getAllowedOrigins();
-  const normalizedOrigin = origin?.replace(/\/+$/, "");
+  if (!origin) return callback(null, true);
 
-  if (!origin || allowedOrigins.includes(normalizedOrigin)) {
+  const normalizedOrigin = origin.replace(/\/+$/, "");
+  const allowedOrigins = getAllowedOrigins();
+
+  const isAllowed =
+    allowedOrigins.includes(normalizedOrigin) ||
+    vercelOrgPattern.test(normalizedOrigin);
+
+  if (isAllowed) {
     return callback(null, true);
   }
 
